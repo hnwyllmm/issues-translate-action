@@ -7,7 +7,6 @@ author: 'tomsun28'
 inputs:
   BOT_GITHUB_TOKEN: 
     description: 'The issue comment bot GITHUB_TOKEN.'
-    default: ${{ github.token }}
   BOT_LOGIN_NAME:
     description: 'The issue comment bot github login name.'
   IS_MODIFY_TITLE: 
