@@ -4,6 +4,8 @@ import * as webhook from '@octokit/webhooks'
 import translate from '@tomsun28/google-translate-api'
 const franc = require('franc-min')
 
+core.info('before run. this is version 3')
+
 async function run(): Promise<void> {
   try {
     if (
