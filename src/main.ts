@@ -17,6 +17,8 @@ async function run(): Promise<void> {
       )
       return
     }
+
+    core.info('version 2')
     
     let issueNumber = null
     let originComment = null
@@ -95,6 +97,7 @@ async function run(): Promise<void> {
       botToken = Buffer.from(defaultBotTokenBase64, 'base64').toString()
       botLoginName = defaultBotLoginName
     }
+    core.info('hnwyllmm: get github token and login name')
 
     // support custom bot note message
     const customBotMessage = core.getInput('CUSTOM_BOT_NOTE')
@@ -109,10 +112,10 @@ async function run(): Promise<void> {
       botLoginName === ''
     ) {
       octokit = github.getOctokit(botToken)
-      core.debug('before get the user of token')
+      core.info('hnwyllmm: before get the user of token')
       const botInfo = await octokit.request('GET /user')
       botLoginName = botInfo.data.login
-      core.debug(`the user of the token is ${botInfo}`)
+      core.debug(`hnwyllmm: the user of the token is ${botInfo}`)
     }
     if (botLoginName === issueUser) {
       core.info(
