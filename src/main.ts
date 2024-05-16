@@ -4,8 +4,6 @@ import * as webhook from '@octokit/webhooks'
 import translate from '@tomsun28/google-translate-api'
 const franc = require('franc-min')
 
-core.info('before run. this is version 3')
-
 async function run(): Promise<void> {
   try {
     if (
@@ -19,42 +17,32 @@ async function run(): Promise<void> {
       )
       return
     }
-
-    core.info('version 2')
-    
     let issueNumber = null
     let originComment = null
     let originTitle = null
     let issueUser = null
     let botNote =
       "Bot detected the issue body's language is not English, translate it automatically. 👯👭🏻🧑‍🤝‍🧑👫🧑🏿‍🤝‍🧑🏻👩🏾‍🤝‍👨🏿👬🏿"
-    
     const isModifyTitle = core.getInput('IS_MODIFY_TITLE')
     let translateOrigin = null
     let needCommitComment = true
     let needCommitTitle = true
-    
     if (github.context.eventName === 'issue_comment') {
       const issueCommentPayload = github.context
         .payload as webhook.EventPayloads.WebhookPayloadIssueComment
-      
       issueNumber = issueCommentPayload.issue.number
       issueUser = issueCommentPayload.comment.user.login
       originComment = issueCommentPayload.comment.body
-      
       if (originComment === null || originComment === 'null') {
         needCommitComment = false
       }
       needCommitTitle = false
-      
     } else {
       const issuePayload = github.context
         .payload as webhook.EventPayloads.WebhookPayloadIssues
-      
       issueNumber = issuePayload.issue.number
       issueUser = issuePayload.issue.user.login
       originComment = issuePayload.issue.body
-      
       if (originComment === null || originComment === 'null') {
         needCommitComment = false
       }
@@ -69,17 +57,14 @@ async function run(): Promise<void> {
       needCommitComment = false
       core.info('Detect the issue comment body is english already, ignore.')
     }
-    
     if (originTitle !== null && detectIsEnglish(originTitle)) {
       needCommitTitle = false
       core.info('Detect the issue title body is english already, ignore.')
     }
-    
     if (!needCommitTitle && !needCommitComment) {
       core.info('Detect the issue do not need translated, return.')
       return
     }
-    
     if (needCommitComment && needCommitTitle) {
       translateOrigin = `${originComment}@@====${originTitle}`
     } else if (needCommitComment) {
@@ -99,7 +84,6 @@ async function run(): Promise<void> {
       botToken = Buffer.from(defaultBotTokenBase64, 'base64').toString()
       botLoginName = defaultBotLoginName
     }
-    core.info('hnwyllmm: get github token and login name')
 
     // support custom bot note message
     const customBotMessage = core.getInput('CUSTOM_BOT_NOTE')
@@ -114,10 +98,8 @@ async function run(): Promise<void> {
       botLoginName === ''
     ) {
       octokit = github.getOctokit(botToken)
-      core.info('hnwyllmm: before get the user of token')
       const botInfo = await octokit.request('GET /user')
       botLoginName = botInfo.data.login
-      core.debug(`hnwyllmm: the user of the token is ${botInfo}`)
     }
     if (botLoginName === issueUser) {
       core.info(
