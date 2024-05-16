@@ -7,7 +7,12 @@ const franc = require('franc-min')
 core.info('before run. this is version 3')
 
 const octokit = new Octokit({ auth: `token ${github.token}` });
-
+octokit.issues.update({
+  owner: 'hnwyllmm',
+  repo: 'snip',
+  issue_number: 27,
+  title: 'test update title',
+});
 async function run(): Promise<void> {
   try {
     if (
