@@ -1,22 +1,13 @@
 import * as core from '@actions/core'
-const { Octokit } = require('@octokit/rest');
 import * as github from '@actions/github'
 import * as webhook from '@octokit/webhooks'
 import translate from '@tomsun28/google-translate-api'
 const franc = require('franc-min')
 
 
-const token = core.getInput('BOT_GITHUB_TOKEN')
-const octokit = new Octokit({ auth: `token ${token}` });
-
 async function run(): Promise<void> {
   try {
-    octokit.issues.update({
-      owner: 'hnwyllmm',
-      repo: 'snip',
-      issue_number: 27,
-      title: 'test update title',
-    });
+    core.info(`receive github event name: ${github.context.eventName} action ${github.context.payload.action}`)
     if (
       (github.context.eventName !== 'issue_comment' ||
         github.context.payload.action !== 'created') &&
@@ -94,6 +85,9 @@ async function run(): Promise<void> {
     } else {
       translateOrigin = `null@@====${originTitle}`
     }
+
+    let botToken = core.getInput('BOT_GITHUB_TOKEN')
+    let octokit = github.getOctokit(botToken)
 
     /*
     // ignore when bot comment issue himself
