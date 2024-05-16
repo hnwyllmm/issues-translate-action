@@ -42,6 +42,7 @@ async function run(): Promise<void> {
       issueNumber = issueCommentPayload.issue.number
       issueUser = issueCommentPayload.comment.user.login
       originComment = issueCommentPayload.comment.body
+      core.info(`issue comment user is: ${issueUser}`)
 
       if (originComment === null || originComment === 'null') {
         needCommitComment = false
@@ -109,9 +110,13 @@ async function run(): Promise<void> {
     ) {
       octokit = github.getOctokit(botToken)
       core.info('hnwyllmm: before get the user of token')
-      const botInfo = await octokit.request('GET /user')
-      botLoginName = botInfo.data.login
-      core.debug(`hnwyllmm: the user of the token is ${botInfo}`)
+      try {
+        const botInfo = await octokit.request('GET /user')
+        botLoginName = botInfo.data.login
+        core.debug(`hnwyllmm: the user of the token is ${botInfo}`)
+      } catch (error: any) {
+        core.info(`cannot get the user of the token. ${error.message}`)
+      }
     }
     if (botLoginName === issueUser) {
       core.info(
@@ -199,7 +204,7 @@ ${translateComment}
     }
     core.setOutput('complete time', new Date().toTimeString())
   } catch (error: any) {
-    core.setFailed(error.message)
+    core.setFailed(`Catch exception: ${error.message}`)
   }
 }
 

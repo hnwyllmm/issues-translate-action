@@ -73,6 +73,7 @@ function run() {
                 issueNumber = issueCommentPayload.issue.number;
                 issueUser = issueCommentPayload.comment.user.login;
                 originComment = issueCommentPayload.comment.body;
+                core.info(`issue comment user is: ${issueUser}`);
                 if (originComment === null || originComment === 'null') {
                     needCommitComment = false;
                 }
@@ -129,9 +130,14 @@ function run() {
                 botLoginName === '') {
                 octokit = github.getOctokit(botToken);
                 core.info('hnwyllmm: before get the user of token');
-                const botInfo = yield octokit.request('GET /user');
-                botLoginName = botInfo.data.login;
-                core.debug(`hnwyllmm: the user of the token is ${botInfo}`);
+                try {
+                    const botInfo = yield octokit.request('GET /user');
+                    botLoginName = botInfo.data.login;
+                    core.debug(`hnwyllmm: the user of the token is ${botInfo}`);
+                }
+                catch (error) {
+                    core.info(`cannot get the user of the token. ${error.message}`);
+                }
             }
             if (botLoginName === issueUser) {
                 core.info(`The issue comment user is bot ${botLoginName} himself, ignore return.`);
@@ -210,7 +216,7 @@ ${translateComment}
             core.setOutput('complete time', new Date().toTimeString());
         }
         catch (error) {
-            core.setFailed(error.message);
+            core.setFailed(`Catch exception: ${error.message}`);
         }
     });
 }
