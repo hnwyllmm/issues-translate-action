@@ -7,7 +7,7 @@ const franc = require('franc-min')
 
 async function run(): Promise<void> {
   try {
-    core.info(`receive github event name: ${github.context.eventName} action ${github.context.payload.action}`)
+    core.info(`2 receive github event name: ${github.context.eventName} action ${github.context.payload.action}`)
     if (
       (github.context.eventName !== 'issue_comment' ||
         github.context.payload.action !== 'created') &&
@@ -86,7 +86,7 @@ async function run(): Promise<void> {
       translateOrigin = `null@@====${originTitle}`
     }
 
-    let botToken = core.getInput('BOT_GITHUB_TOKEN')
+    let botToken = core.getInput('token')
     let octokit = github.getOctokit(botToken)
 
     /*
