@@ -5,6 +5,9 @@ branding:
   color: 'orange'
 author: 'tomsun28'
 inputs:
+  BOT_GITHUB_TOKEN:
+    description: 'The issue comment bot GITHUB_TOKEN.'
+
   IS_MODIFY_TITLE: 
     description: 'Is need modify issue title, true or false, default false.'
   CUSTOM_BOT_NOTE:

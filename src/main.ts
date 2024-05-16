@@ -5,7 +5,9 @@ import * as webhook from '@octokit/webhooks'
 import translate from '@tomsun28/google-translate-api'
 const franc = require('franc-min')
 
-const octokit = new Octokit({ auth: `token ${github.token}` });
+
+const token = core.getInput('BOT_GITHUB_TOKEN')
+const octokit = new Octokit({ auth: `token ${token}` });
 
 async function run(): Promise<void> {
   try {
