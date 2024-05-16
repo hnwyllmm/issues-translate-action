@@ -88,22 +88,13 @@ async function run(): Promise<void> {
       translateOrigin = `null@@====${originTitle}`
     }
 
-    let botToken = core.getInput('token')
-    let octokit = github.getOctokit(botToken)
-
-    /*
-    // ignore when bot comment issue himself
     let botToken = core.getInput('BOT_GITHUB_TOKEN')
+    let octokit = null
+
+    // ignore when bot comment issue himself
     let botLoginName = core.getInput('BOT_LOGIN_NAME')
-    if (botToken === null || botToken === undefined || botToken === '') {
-      // use the default github bot token
-      const defaultBotTokenBase64 =
-        'Y2I4M2EyNjE0NThlMzIwMjA3MGJhODRlY2I5NTM0ZjBmYTEwM2ZlNg=='
-      const defaultBotLoginName = 'Issues-translate-bot'
-      botToken = Buffer.from(defaultBotTokenBase64, 'base64').toString()
-      botLoginName = defaultBotLoginName
-    }
-    core.info('hnwyllmm: get github token and login name')
+
+    core.info(`get github token and login name. login name is: ${botLoginName}`)
 
     // support custom bot note message
     const customBotMessage = core.getInput('CUSTOM_BOT_NOTE')
@@ -111,7 +102,6 @@ async function run(): Promise<void> {
       botNote = customBotMessage
     }
 
-    let octokit = null
     if (
       botLoginName === null ||
       botLoginName === undefined ||
@@ -129,7 +119,6 @@ async function run(): Promise<void> {
       )
       return
     }
-    */
 
     core.info(`hnwyllmm translate origin body is: ${translateOrigin}`)
 
@@ -170,9 +159,9 @@ async function run(): Promise<void> {
     }
 
     // create comment by bot
-    // if (octokit === null) {
-    //   octokit = github.getOctokit(botToken)
-    // }
+    if (octokit === null) {
+      octokit = github.getOctokit(botToken)
+    }
     if (isModifyTitle === 'false' && needCommitTitle && needCommitComment) {
       translateComment = ` 
 > ${botNote}      

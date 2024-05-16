@@ -114,47 +114,29 @@ function run() {
             else {
                 translateOrigin = `null@@====${originTitle}`;
             }
-            let botToken = core.getInput('token');
-            let octokit = github.getOctokit(botToken);
-            /*
+            let botToken = core.getInput('BOT_GITHUB_TOKEN');
+            let octokit = null;
             // ignore when bot comment issue himself
-            let botToken = core.getInput('BOT_GITHUB_TOKEN')
-            let botLoginName = core.getInput('BOT_LOGIN_NAME')
-            if (botToken === null || botToken === undefined || botToken === '') {
-              // use the default github bot token
-              const defaultBotTokenBase64 =
-                'Y2I4M2EyNjE0NThlMzIwMjA3MGJhODRlY2I5NTM0ZjBmYTEwM2ZlNg=='
-              const defaultBotLoginName = 'Issues-translate-bot'
-              botToken = Buffer.from(defaultBotTokenBase64, 'base64').toString()
-              botLoginName = defaultBotLoginName
-            }
-            core.info('hnwyllmm: get github token and login name')
-        
+            let botLoginName = core.getInput('BOT_LOGIN_NAME');
+            core.info(`get github token and login name. login name is: ${botLoginName}`);
             // support custom bot note message
-            const customBotMessage = core.getInput('CUSTOM_BOT_NOTE')
+            const customBotMessage = core.getInput('CUSTOM_BOT_NOTE');
             if (customBotMessage !== null && customBotMessage.trim() !== '') {
-              botNote = customBotMessage
+                botNote = customBotMessage;
             }
-        
-            let octokit = null
-            if (
-              botLoginName === null ||
-              botLoginName === undefined ||
-              botLoginName === ''
-            ) {
-              octokit = github.getOctokit(botToken)
-              core.info('hnwyllmm: before get the user of token')
-              const botInfo = await octokit.request('GET /user')
-              botLoginName = botInfo.data.login
-              core.debug(`hnwyllmm: the user of the token is ${botInfo}`)
+            if (botLoginName === null ||
+                botLoginName === undefined ||
+                botLoginName === '') {
+                octokit = github.getOctokit(botToken);
+                core.info('hnwyllmm: before get the user of token');
+                const botInfo = yield octokit.request('GET /user');
+                botLoginName = botInfo.data.login;
+                core.debug(`hnwyllmm: the user of the token is ${botInfo}`);
             }
             if (botLoginName === issueUser) {
-              core.info(
-                `The issue comment user is bot ${botLoginName} himself, ignore return.`
-              )
-              return
+                core.info(`The issue comment user is bot ${botLoginName} himself, ignore return.`);
+                return;
             }
-            */
             core.info(`hnwyllmm translate origin body is: ${translateOrigin}`);
             // translate issue comment body to english
             const translateTmp = yield translateIssueOrigin(translateOrigin);
@@ -188,9 +170,9 @@ function run() {
                 core.setFailed(`the translateBody is ${translateTmp}`);
             }
             // create comment by bot
-            // if (octokit === null) {
-            //   octokit = github.getOctokit(botToken)
-            // }
+            if (octokit === null) {
+                octokit = github.getOctokit(botToken);
+            }
             if (isModifyTitle === 'false' && needCommitTitle && needCommitComment) {
                 translateComment = ` 
 > ${botNote}      

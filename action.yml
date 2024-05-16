@@ -6,7 +6,7 @@ branding:
   color: 'orange'
 
 inputs:
-  token:
+  BOT_GITHUB_TOKEN:
     description: 'The issue comment bot GITHUB_TOKEN.'
     required: true
     default: ${{ github.token }}

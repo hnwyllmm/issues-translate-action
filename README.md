@@ -115,3 +115,9 @@ Post an issue in [issues-translate-action](https://github.com/tomsun28/issues-tr
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+## How to Build
+In the issue-translate-action source code directory, run the following command to build the action.
+```shell
+docker run --rm -v $PWD:/app -w /app node:16 yarn all
+```
