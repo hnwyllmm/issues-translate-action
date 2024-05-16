@@ -50,26 +50,27 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             core.info(`2 receive github event name: ${github.context.eventName} action ${github.context.payload.action}`);
-            if ((github.context.eventName !== 'issue_comment' ||
-                github.context.payload.action !== 'created') &&
-                (github.context.eventName !== 'issues' ||
-                    github.context.payload.action !== 'opened')) {
-                core.info(`The status of the action must be created on issue_comment, no applicable - ${github.context.payload.action} on ${github.context.eventName}, return`);
+            let eventName = github.context.eventName;
+            let action = github.context.payload.action;
+            if ((eventName !== 'issue_comment' || action !== 'created') &&
+                (eventName !== 'issues' || action !== 'opened') &&
+                (eventName !== 'pull_request' || action !== 'opened') &&
+                (eventName !== 'pull_request_target' || action !== 'opened')) {
+                core.info(`The status of the action must be created on issue or pull request, no applicable - ${github.context.payload.action} on ${github.context.eventName}, return`);
                 return;
             }
-            core.info('version 2');
-            let issueNumber = null;
-            let originComment = null;
+            let issueNumber = -1;
+            let originComment = '';
             let originTitle = null;
             let issueUser = null;
             let botNote = "Bot detected the issue body's language is not English, translate it automatically. 👯👭🏻🧑‍🤝‍🧑👫🧑🏿‍🤝‍🧑🏻👩🏾‍🤝‍👨🏿👬🏿";
             const isModifyTitle = core.getInput('IS_MODIFY_TITLE');
-            let translateOrigin = null;
+            let translateOrigin = '';
             let needCommitComment = true;
             let needCommitTitle = true;
-            if (github.context.eventName === 'issue_comment') {
-                const issueCommentPayload = github.context
-                    .payload;
+            if (eventName === 'issue_comment') {
+                // new issue comment
+                const issueCommentPayload = github.context.payload;
                 issueNumber = issueCommentPayload.issue.number;
                 issueUser = issueCommentPayload.comment.user.login;
                 originComment = issueCommentPayload.comment.body;
@@ -79,9 +80,9 @@ function run() {
                 }
                 needCommitTitle = false;
             }
-            else {
-                const issuePayload = github.context
-                    .payload;
+            else if (eventName === 'issues') {
+                // new issue
+                const issuePayload = github.context.payload;
                 issueNumber = issuePayload.issue.number;
                 issueUser = issuePayload.issue.user.login;
                 originComment = issuePayload.issue.body;
@@ -92,6 +93,13 @@ function run() {
                 if (originTitle === null || originTitle === 'null') {
                     needCommitTitle = false;
                 }
+            }
+            else if (eventName === 'pull_request' || eventName === 'pull_request_target') {
+                // new pull request
+                const pullRequestPayload = github.context.payload;
+                issueNumber = pullRequestPayload.number;
+                originTitle = pullRequestPayload.pull_request.title;
+                originComment = pullRequestPayload.pull_request.body;
             }
             // detect issue title comment body is english
             if (originComment !== null && detectIsEnglish(originComment)) {
