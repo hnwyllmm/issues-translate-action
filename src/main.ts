@@ -129,7 +129,7 @@ async function run(): Promise<void> {
     }
     */
 
-    core.info(`translate origin body is: ${translateOrigin}`)
+    core.info(`hnwyllmm translate origin body is: ${translateOrigin}`)
 
     // translate issue comment body to english
     const translateTmp = await translateIssueOrigin(translateOrigin)
