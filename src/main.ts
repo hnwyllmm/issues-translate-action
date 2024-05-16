@@ -1,4 +1,5 @@
 import * as core from '@actions/core'
+const { Octokit } = require('@octokit/rest');
 import * as github from '@actions/github'
 import * as webhook from '@octokit/webhooks'
 import translate from '@tomsun28/google-translate-api'
